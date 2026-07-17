@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Primary Meta Tags -->
-    <title>PDF Tools</title>
-    <meta name="title" content="PDF Tools" />
+    <title>{{#if brandName}}{{brandName}}{{else}}PDF Tools{{/if}}</title>
+    <meta
+      name="title"
+      content="{{#if brandName}}{{brandName}}{{else}}PDF Tools{{/if}}"
+    />
     <meta
       name="description"
-      content="Free online PDF tools - Merge, split, compress, convert PDFs. 100% browser-based, no signup required, unlimited files."
+      content="Free PDF tools - merge, split, compress, convert. Everything runs in your browser: your files never leave your device and are never uploaded to a server."
     />
 
     <!-- Mobile Web App -->
@@ -59,7 +62,7 @@
               alt="{{#if brandName}}{{brandName}}{{else}}Bento PDF{{/if}} Logo"
               class="h-8 w-8"
             />
-            <span class="text-white font-bold text-xl ml-2">
+            <span class="brand-wordmark text-white font-bold text-xl ml-2">
               <a href="/"
                 >{{#if brandName}}{{brandName}}{{else}}BentoPDF{{/if}}</a
               >
@@ -77,6 +80,14 @@
         </h1>
         <p class="text-gray-400" data-i18n="simpleMode.subtitle">
           Select a tool to get started
+        </p>
+        <!-- The actual value prop: this toolkit is 100% client-side. Worth
+             stating plainly on a customer-facing page. -->
+        <p
+          class="privacy-note mt-4 inline-flex items-center gap-2 text-sm text-indigo-400"
+        >
+          <i data-lucide="shield-check" class="w-4 h-4" aria-hidden="true"></i>
+          <span>Your files never leave your device — every tool runs in your browser.</span>
         </p>
       </div>
 
@@ -233,12 +244,14 @@
                 alt="{{#if brandName}}{{brandName}}{{else}}Bento PDF{{/if}} Logo"
                 class="h-8 w-8 mr-2"
               />
-              <span class="text-white font-bold text-lg"
+              <span class="brand-wordmark text-white font-bold text-lg"
                 >{{#if brandName}}{{brandName}}{{else}}BentoPDF{{/if}}</span
               >
             </div>
-            <p class="text-gray-400 text-sm">
-              {{#if footerText}}{{footerText}}{{else}}&copy; 2026 BentoPDF. All
+            <!-- Triple-stash: footerText is set by the operator at build time
+                 (never user input), so it may carry the AGPL source link. -->
+            <p class="text-gray-400 text-sm footer-brand-text">
+              {{#if footerText}}{{{footerText}}}{{else}}&copy; 2026 BentoPDF. All
               rights reserved.{{/if}}
             </p>
             <p class="text-gray-500 text-xs mt-2">

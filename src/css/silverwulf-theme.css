@@ -1,0 +1,143 @@
+/*
+ * SilverWulf PDF — brand theme layer.
+ *
+ * Retheme strategy: upstream never uses semantic tokens; it uses raw Tailwind
+ * utilities (bg-indigo-600, text-indigo-400, ...) in ~1769 places. Tailwind v4
+ * compiles every one of those to var(--color-<name>-<step>), so redefining the
+ * ramps here recolors the whole app without touching a single utility class.
+ * That is what keeps this fork trivial to rebase onto upstream releases:
+ * one import in styles.css and this file.
+ *
+ * Every value below is contrast-verified against real usage, not eyeballed:
+ *   bg-indigo-600  (610x) + text-white         -> 5.04:1
+ *   hover:bg-indigo-500 (31x) + text-white     -> 4.60:1   <- upstream's own is 4.47:1
+ *   hover:bg-indigo-700 (176x) + text-white    -> 7.26:1
+ *   focus:ring/border-indigo-500 (485x) on bg  -> 4.26:1   (non-text needs 3:1)
+ *   text-indigo-400 (307x) on surface          -> 14.15:1  (brand #00FFCC)
+ *   text-gray-400 placeholder on surface       -> 5.70:1
+ */
+
+@theme {
+  /* ---- Brand teal, mapped onto the indigo ramp ---------------------------
+   * #00FFCC is the SilverWulf accent. It is far too bright to sit under white
+   * text, so it lands at 400 (the accent-TEXT step, the most-used accent in the
+   * codebase) while 500-700 carry the deep teals that fills need. */
+  --color-indigo-50: #e8fff9;
+  --color-indigo-100: #c2fff2;
+  --color-indigo-200: #7dffe4;
+  --color-indigo-300: #4dffdc;
+  --color-indigo-400: #00ffcc;
+  --color-indigo-500: #0d8472;
+  --color-indigo-600: #0c7d6c;
+  --color-indigo-700: #0a6255;
+  --color-indigo-800: #0a4d44;
+  --color-indigo-900: #0b3a34;
+  --color-indigo-950: #06231f;
+
+  /* ---- Gradient accents (upstream: from-indigo-500 via-purple-600 to-purple-500)
+   * Pulled cooler toward cyan so gradients stay in the brand family instead of
+   * reading as leftover violet. */
+  --color-purple-50: #e8fdff;
+  --color-purple-100: #c2f8ff;
+  --color-purple-200: #7deeff;
+  --color-purple-300: #4de4ff;
+  --color-purple-400: #00d9ff;
+  --color-purple-500: #0d7d84;
+  --color-purple-600: #0c6e7d;
+  --color-purple-700: #0a5665;
+  --color-purple-800: #0a444f;
+  --color-purple-900: #0b333c;
+  --color-purple-950: #061f24;
+
+  --color-violet-300: #4dffdc;
+  --color-violet-400: #00ffcc;
+  --color-violet-500: #0d8472;
+  --color-violet-600: #0c7d6c;
+  --color-violet-700: #0a6255;
+
+  /* ---- Neutrals, tinted to the SilverWulf blue-black --------------------
+   * Same light->dark ordering as Tailwind's default gray, so light surfaces
+   * (the white preview modal, light tool panels) keep working untouched. */
+  --color-gray-50: #f8fafc;
+  --color-gray-100: #f1f5f9;
+  --color-gray-200: #e2e8f0;
+  --color-gray-300: #cdd5e0;
+  --color-gray-400: #8590a3;
+  --color-gray-500: #5b6577;
+  --color-gray-600: #2a2f3d;
+  --color-gray-700: #1c1f2b;
+  --color-gray-800: #12141d;
+  --color-gray-900: #0a0b12;
+  --color-gray-950: #06070c;
+}
+
+/* Body: upstream hardcodes #111827 (gray-900). Point it at the brand black. */
+body {
+  background-color: #0a0b12;
+  color: #cdd5e0;
+}
+
+/* ---- Wordmark ----------------------------------------------------------
+ * Product register: one family. DM Sans is already loaded and self-hosted, so
+ * the wordmark uses it rather than pulling another font over the wire (which
+ * would also add a CDN dependency this deployment deliberately avoids). */
+[data-simple-nav] .brand-wordmark,
+[data-simple-footer] .brand-wordmark {
+  letter-spacing: -0.015em;
+}
+
+/* The wolf mark is chrome on near-black; a soft teal halo seats it against the
+ * bar without a hard edge. Decorative, so it stays off for reduced-motion users
+ * only insofar as it never animates. */
+[data-simple-nav] img,
+[data-simple-footer] img {
+  filter: drop-shadow(0 0 6px rgb(0 255 204 / 0.18));
+}
+
+/* ---- Focus visibility --------------------------------------------------
+ * Upstream leans on focus:ring-indigo-500. Give keyboard users an unmistakable
+ * brand-accent ring everywhere, including controls upstream missed. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid #00ffcc;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ---- Tool cards --------------------------------------------------------
+ * The grid IS the product here. Selection/hover state uses the accent as a
+ * state indicator (product register), not as decoration. */
+.tool-card {
+  border: 1px solid #ffffff12;
+  background-color: #12141d;
+}
+.tool-card:hover {
+  border-color: rgb(0 255 204 / 0.35);
+  transform: translateY(-2px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .tool-card,
+  .tool-card:hover {
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ---- Footer source link ------------------------------------------------
+ * AGPL-3.0 obliges us to offer the Corresponding Source to network users.
+ * The link is passed in via VITE_FOOTER_TEXT and rendered unescaped. */
+.footer-brand-text a {
+  color: #00ffcc;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.footer-brand-text a:hover {
+  color: #4dffdc;
+}
+
+/* The privacy note is a trust signal, not decoration: accent + icon, no chrome. */
+.privacy-note {
+  border: 1px solid rgb(0 255 204 / 0.22);
+  background-color: rgb(0 255 204 / 0.06);
+  border-radius: 9999px;
+  padding: 0.375rem 0.875rem;
+}
